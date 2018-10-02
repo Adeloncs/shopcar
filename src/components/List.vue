@@ -29,7 +29,7 @@
 						    <b-row>
 						        <b-col class="text">
 						        	<h3>Resultados da Busca por</h3>
-						        	<h6>Sua Pesquisa por Cruze encontrou {{searchAuto}} veículo(s) em 2 páginas(s).</h6>
+						        	<h6>Sua Pesquisa por Cruze encontrou {{car_posts.length}} veículo(s) em 2 páginas(s).</h6>
 						        </b-col>
 						        <b-col>
 						        	<a id="bar2"class="grid-icon" v-on:click="layout = 'grid'" v-bind:class="{ 'active': layout == 'grid'}" title="Grid"></a>
@@ -49,7 +49,7 @@
 						        <b-col sm="4" cols="6">
 									  <div>
 									  	<h6 >Ordenar por:</h6>
-									    <b-form-select v-model="selected" :options="options" class="form-size mb-3" size="sm" />
+									    <b-form-select v-model="selected" :options="options" class="form-size mb-3" size="sm"  />
 									  </div>
 								</b-col>
 						    </b-row>
@@ -60,29 +60,29 @@
 					<!-- Vue.js lets us choose which UL to show depending on the "layout" variable -->
 					<ul v-if="layout === 'grid'" class="grid">
 						<!-- A "grid" view with photos only -->
-						<li v-for="blog in blog_posts">
-							<a v-bind:href="blog.url" v-bind:style="{ backgroundImage: 'url(' + blog.image.large + ')' }" target="_blank"></a>
+						<li v-for="car in car_posts" v-if="car.price >= demo3.value[0] && car.price <= demo3.value[1]">
+							<a v-bind:href="car.url" v-bind:style="{ backgroundImage: 'url(' + car.image.large + ')' }" target="_blank"></a>
 						</li>
 					</ul>
-
 					<div>
 						<ul v-if="layout === 'list'" class="list">
-							<li v-for="blog in blog_posts">	
+							<li v-for="car in car_posts" v-if="car.price >= demo3.value[0] && car.price <= demo3.value[1]">	
+								
 								<b-container class="bv-example-row">
 								    <b-row>
 
 								    	<b-col md="4">
-												<a v-bind:href="blog.url" target="_blank">
-													<img v-bind:src="blog.image.small">
+												<a v-bind:href="car.url" target="_blank">
+													<img v-bind:src="car.image.small">
 												</a>
 								        </b-col>
 
 								        <b-col md="8">
 									        <b-row>
 									        	<b-col>
-										        	<h6>Chevrolet</h6>
-										        	<h5>{{blog.title}}</h5>
-										        	<p>R$ 200.000,00</p>
+										        	<h6>{{car.marca}}</h6>
+										        	<h5>{{car.title}}</h5>
+										        	<p>R$ {{car.price}},00</p>
 									        		<hr>
 									        	</b-col>
 									        </b-row>						        
@@ -90,11 +90,11 @@
 										        <b-col sm="3" cols="4">
 													<b-row>
 											        	<img id="icons" src="../assets/ano.png">
-											        	<h6 class="text-aling">2007/2007</h6>
+											        	<h6 class="text-aling">{{car.year}}/{{car.year}}</h6>
 													</b-row>
 													<b-row>
 											        	<img id="icons" src="../assets/km.png">
-											        	<h6 class="text-aling">20000Km</h6>
+											        	<h6 class="text-aling">{{car.km}}Km</h6>
 										        	</b-row>
 										        </b-col>
 										        <b-col sm="3" cols="4">
@@ -149,87 +149,156 @@ import vueSlider from 'vue-slider-component';
 	  name: 'js-grid-list',
 	  data()  {
 	  	return {
-	  // The layout mode, possible values are "grid" or "list".
-	    layout: 'list',
-	    blog_posts: [{
-			title: 'Tapping into UGC with Offerpop',
-			url: 'https://voltagead.com/tapping-ugc-offerpop/',
-			image: {
-				'large': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/08/header-960x500-copy-960x500.jpg',
-				'small': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/08/header-960x500-copy-300x300.jpg'
-			}
-		}, {
-			title: '5 websites that get design right',
-			url: 'https://voltagead.com/5-websites-get-design-right/',
-			image: {
-				'large': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/08/HERO-960x500.jpg',
-				'small': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/08/HERO-300x300.jpg'
-			}
-		}, {
-			title: 'Mariachis, Hats, and Pies, Oh My!',
-			url: 'https://voltagead.com/mariachis-hats-pies-oh/',
-			image: {
-				'large': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/07/IMG_2629.2-960x582.jpg',
-				'small': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/07/IMG_2629.2-300x300.jpg'
-			}
-		}, {
-			title: 'Big buzz. Big brands. Reebok does omnichannel.',
-			url: 'https://voltagead.com/big-buzz-big-brands-reebok-omnichannel/',
-			image: {
-				'large': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/07/reebok-hero2.jpg',
-				'small': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/07/reebok-hero2-300x300.jpg'
-			}
-		}, {
-			title: 'Colorado Ad Day',
-			url: 'https://voltagead.com/denver-ad-day/',
-			image: {
-				'large': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/07/sample-blog-960x577.jpg',
-				'small': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/07/sample-blog-300x300.jpg'
-			}
-		}, {
-			title: 'Using the Ordinary to Build the Extraordinary',
-			url: 'https://voltagead.com/using-ordinary-build-extraordinary/',
-			image: {
-				'large': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/06/header-960x500.jpg',
-				'small': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/06/header-300x300.jpg'
-			}
-		}],
-		searchAuto: 1,
-		show: true,
-	    selected: null,
-	    options: [
-	        { value: null, text: 'Ano' },
-	        { value: null, text: 'Preço' },
-	        { value: null, text: 'Km' }
-	    ]	,
-        demo3: {
-          value: [0, 35000],
-          width: '100%',
-          height: 8,
-          dotSize: 16,
-          min: 0,
-          max: 200000,
-          disabled: false,
-          show: true,
-          useKeyboard: false,
-          tooltip: 'always',
-          formatter: 'R${value}',
-          mergeFormatter: 'R${value1} ~ R${value2}',
-          bgStyle: {
-            backgroundColor: '#fff',
-            boxShadow: 'inset 0.5px 0.5px 3px 1px rgba(0,0,0,.36)'
-          },
-          tooltipStyle: {
-            backgroundColor: '#666',
-            borderColor: '#666'
-          },
-          processStyle: {
-            backgroundColor: '#999'
-          }
-        },
-	    }
-	 }
-	}
+		  // The layout mode, possible values are "grid" or "list".
+		    layout: 'list',
+		    car_posts: [{
+		    	marca: 'Chevrolet',
+				title: 'Corsa',
+				url: 'https://voltagead.com/tapping-ugc-offerpop/',
+				price: 20000,
+				year: 2000,
+				km:255000,
+				image: {
+					'large': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/08/header-960x500-copy-960x500.jpg',
+					'small': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/08/header-960x500-copy-300x300.jpg'
+				}
+			}, {
+				marca: 'VW',
+				title: 'GOL',
+				url: 'https://voltagead.com/5-websites-get-design-right/',
+				price: 20000,
+				year: 2000,
+				km:300000,
+				image: {
+					'large': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/08/HERO-960x500.jpg',
+					'small': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/08/HERO-300x300.jpg'
+				}
+			}, {
+				marca: 'Chevrolet',
+				title: 'Cruze',
+				url: 'https://voltagead.com/mariachis-hats-pies-oh/',
+				price: 25000,
+				year: 2005,
+				km:220000,
+				image: {
+					'large': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/07/IMG_2629.2-960x582.jpg',
+					'small': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/07/IMG_2629.2-300x300.jpg'
+				}
+			}, {
+				marca: 'Ford',
+				title: 'Fiesta',
+				url: 'https://voltagead.com/big-buzz-big-brands-reebok-omnichannel/',
+				price: 35000,
+				year: 2014,
+				km:100000,
+				image: {
+					'large': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/07/reebok-hero2.jpg',
+					'small': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/07/reebok-hero2-300x300.jpg'
+				}
+			}, {
+				marca: 'Chevrolet',
+				title: 'Colorado',
+				url: 'https://voltagead.com/denver-ad-day/',
+				price: 30000,
+				year: 2002,
+				km:100000,
+				image: {
+					'large': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/07/sample-car-960x577.jpg',
+					'small': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/07/sample-car-300x300.jpg'
+				}
+			}, {
+				marca: 'Chevrolet',
+				title: 'Onix',
+				url: 'https://voltagead.com/using-ordinary-build-extraordinary/',
+				price: 10000,
+				year: 2010,
+				km:300000,
+				image: {
+					'large': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/06/header-960x500.jpg',
+					'small': 'https://2e64oz2sjk733hqp882l9xbo-wpengine.netdna-ssl.com/wp-content/uploads/2016/06/header-300x300.jpg'
+				}
+			}],
+			searchAuto: 1,
+			show: true,
+		    selected: 2,
+		    options: [
+		        { value: 1, text: 'Ano' },
+		        { value: 2, text: 'Preço' },
+		        { value: 3, text: 'Km' }
+		    ]	,
+	        demo3: {
+	          value: [0, 35000],
+	          width: '100%',
+	          height: 8,
+	          dotSize: 16,
+	          min: 0,
+	          max: 200000,
+	          disabled: false,
+	          show: true,
+	          useKeyboard: false,
+	          tooltip: 'always',
+	          formatter: 'R${value}',
+	          mergeFormatter: 'R${value1} ~ R${value2}',
+	          bgStyle: {
+	            backgroundColor: '#fff',
+	            boxShadow: 'inset 0.5px 0.5px 3px 1px rgba(0,0,0,.36)'
+	          },
+	          tooltipStyle: {
+	            backgroundColor: '#666',
+	            borderColor: '#666'
+	          },
+	          processStyle: {
+	            backgroundColor: '#999'
+	          }
+	        }
+	 	};
+	 },
+	methods: {
+	  even: function (numbers,selected) {
+	  switch (selected) {
+	  	case 1:
+	  		  return numbers.sort(function (a, b) {
+					  if (a.year > b.year) {
+					    return 1;
+					  }
+					  if (a.year < b.year) {
+					    return -1;
+					  }
+					  // a must be equal to b
+					  return 0;
+						});
+	  		break;
+	  	case 2:
+	  		return numbers.sort(function (a, b) {
+					  if (a.price > b.price) {
+					    return 1;
+					  }
+					  if (a.price < b.price) {
+					    return -1;
+					  }
+					  // a must be equal to b
+					  return 0;
+						});
+	  		break;
+	  	case 3:
+		    return numbers.sort(function (a, b) {
+					  if (a.km > b.km) {
+					    return 1;
+					  }
+					  if (a.km < b.km) {
+					    return -1;
+					  }
+					  // a must be equal to b
+					  return 0;
+						});
+	  		break;
+	  }
+	    
+	  }
+
+	  }
+	
+};
 
 
 </script>
@@ -350,7 +419,7 @@ h6{
 	position: relative;
 	width: 50%;
 }
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 550px) {
 .grid li {
 	display: block;
 	position: relative;
